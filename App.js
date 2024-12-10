@@ -1,20 +1,42 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { View, StyleSheet } from 'react-native';
+import HomeScreen from './src/screens/HomeScreen';  // Default Import
+import AddTodoScreen from './src/screens/AddTodoScreen';  // Default Import
 
-export default function App() {
+const App = () => {
+  const [currentScreen, setCurrentScreen] = useState('Home');
+  const [todos, setTodos] = useState([]);
+
+  const addTodo = (todo) => {
+    setTodos([...todos, todo]);
+    setCurrentScreen('Home'); // Kembali ke layar utama setelah menambahkan To-Do
+  };
+
+  const deleteTodo = (index) => {
+    const updatedTodos = todos.filter((_, i) => i !== index); // Menghapus To-Do berdasarkan index
+    setTodos(updatedTodos);
+  };
+
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+      {currentScreen === 'Home' ? (
+        <HomeScreen
+          todos={todos}
+          navigateToAdd={() => setCurrentScreen('AddTodo')}
+          deleteTodo={deleteTodo}  // Menambahkan fungsi deleteTodo
+        />
+      ) : (
+        <AddTodoScreen addTodo={addTodo} />
+      )}
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });
+
+export default App;
